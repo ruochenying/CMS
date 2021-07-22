@@ -17,14 +17,13 @@ import { login } from "../lib/services/api-service";
 const LoginForm = () => {
   const [role, setRole] = useState<Role>("student");
   const router = useRouter();
-  const [authError, setAuthError] = useState(false);
 
   const onFinish = async (values: LoginFormValue) => {
     const { remember, ...rest } = values;
     const userInfo = await login(rest);
     if (!!userInfo) {
       storage.setUserInfo(userInfo);
-      router.push("dashboard");
+      router.push(`/dashboard/${role}`);
     }
   };
 
@@ -90,9 +89,6 @@ const LoginForm = () => {
           </a>
         </Form.Item>
       </Form>
-      {authError && (
-        <Alert message="Please check your email and password" type="error" />
-      )}
     </Fragment>
   );
 };

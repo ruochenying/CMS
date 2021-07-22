@@ -5,7 +5,7 @@ const Login = () => {
   const { Title } = Typography;
 
   return (
-    <Row>
+    <Row gutter={24}>
       <Col span={8}></Col>
       <Col span={8}>
         <div style={{ textAlign: "center" }}>
