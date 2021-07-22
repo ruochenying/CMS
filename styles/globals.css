@@ -38,3 +38,9 @@ a {
 .site-layout .site-layout-background {
   background: #fff;
 }
+
+.menu-style {
+  height: 100vh;
+  width: 200px;
+  position: fixed;
+}

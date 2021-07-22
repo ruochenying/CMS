@@ -8,7 +8,7 @@ const Login = () => {
     <Row gutter={24}>
       <Col span={8}></Col>
       <Col span={8}>
-        <div style={{ textAlign: "center" }}>
+        <div style={{ textAlign: "center", marginTop: 30 }}>
           <h1 style={{ fontWeight: 600 }}>COURSE MANAGEMENT ASSISTANT</h1>
         </div>
 

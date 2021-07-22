@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { debounce } from "lodash";
+import { debounce, omitBy } from "lodash";
 import Link from "next/link";
 import { PlusOutlined } from "@ant-design/icons";
 import { Table, Popconfirm, Space, Button, Input } from "antd";
 import TextLink from "antd/lib/typography/Link";
 import { ColumnsType } from "antd/es/table";
 import { formatDistanceToNow } from "date-fns";
-import { Student, CourseShort, StudentType } from "../../../../lib/model";
+import {
+  Student,
+  CourseShort,
+  StudentType,
+  Paginator,
+} from "../../../../lib/model";
 import DashBoardLayout from "../../../../components/DashboardLayout";
 import {
   getStudents,
@@ -23,6 +28,7 @@ const Page = () => {
   const [query, setQuery] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [total, setTotal] = useState<number>();
 
   const [selectedStudent, setSelectedStudent] = useState<Student>(null);
   const [studentList, setStudentList] = useState<Student[]>();
@@ -30,18 +36,20 @@ const Page = () => {
   const { Search } = Input;
 
   useEffect(() => {
-    const reqParams = !!query
-      ? {
-          limit: pagination.pageSize,
-          page: pagination.current,
-          query: query,
-        }
-      : {
-          limit: pagination.pageSize,
-          page: pagination.current,
-        };
+    const reqParams = omitBy(
+      {
+        limit: pagination.pageSize,
+        page: pagination.current,
+        query: query,
+      },
+      (value) => !value
+    );
     setLoading(true);
-    getStudents(reqParams).then((resp) => setStudentList(resp.students));
+    getStudents(reqParams).then((resp) => {
+      setTotal(resp.total);
+
+      setStudentList(resp.students);
+    });
     setLoading(false);
   }, [query, pagination]);
 
@@ -50,7 +58,7 @@ const Page = () => {
     setSelectedStudent(null);
   };
 
-  const editStudent = (value: any, record: Student, index: number) => {
+  const renderAction = (value: any, record: Student, index: number) => {
     return (
       <Space size="middle">
         <TextLink
@@ -65,13 +73,14 @@ const Page = () => {
           title="Are you sure to delete?"
           onConfirm={async () => {
             const response = await deleteStudent(record.id);
-            if (response.data.data) {
+            if (response) {
               const newStudentList = [...studentList];
               const index = studentList.findIndex(
                 (student) => student.id === record.id
               );
               newStudentList.splice(index, 1);
               setStudentList(newStudentList);
+              setTotal(total - 1);
             }
           }}
           okText="Confirm"
@@ -143,7 +152,7 @@ const Page = () => {
     {
       title: "Action",
       dataIndex: "action",
-      render: editStudent,
+      render: renderAction,
     },
   ];
 
@@ -178,7 +187,7 @@ const Page = () => {
         columns={columns}
         dataSource={studentList}
         rowKey={(record) => record.id}
-        pagination={pagination}
+        pagination={{ ...pagination, total: total, showSizeChanger: true }}
         loading={loading}
         onChange={({ current, pageSize }) => {
           setPagination({
@@ -202,11 +211,11 @@ const Page = () => {
               const index = studentList.findIndex(
                 (student) => student.id === updatedStudent.id
               );
-              console.log(index);
               if (index > 0) {
                 newStudentList[index] = updatedStudent;
               } else {
                 newStudentList.push(updatedStudent);
+                setTotal(total + 1);
               }
               setStudentList(newStudentList);
             }

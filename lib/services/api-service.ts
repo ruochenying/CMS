@@ -73,6 +73,7 @@ export const login = async ({ password, ...rest }: LoginRequest) => {
         password: AES.encrypt(password, "cms").toString(),
       }
     );
+    message.success(data.msg);
     return data.data;
   } catch (e) {
     errorHandler(e);
@@ -87,6 +88,7 @@ export const getStudents = async (req?: StudentsRequest) => {
         params: req,
       }
     );
+    message.success(data.msg);
     return data.data;
   } catch (e) {
     errorHandler(e);
@@ -99,6 +101,7 @@ export const addStudent = async (req: AddStudentRequest) => {
       RootPath.students,
       req
     );
+    message.success(data.msg);
     return data.data;
   } catch (e) {
     errorHandler(e);
@@ -111,6 +114,7 @@ export const updateStudent = async (req: UpdateStudentRequest) => {
       RootPath.students,
       req
     );
+    message.success(data.msg);
     return data.data;
   } catch (e) {
     errorHandler(e);
@@ -119,9 +123,11 @@ export const updateStudent = async (req: UpdateStudentRequest) => {
 
 export const deleteStudent = async (id: number) => {
   try {
-    return await axiosInstance.delete<IResponse<Boolean>>(
+    const { data } = await axiosInstance.delete<IResponse<Boolean>>(
       RootPath.students + "/" + id
     );
+    message.success(data.msg);
+    return data.data;
   } catch (e) {
     errorHandler(e);
   }
@@ -132,6 +138,7 @@ export const getStudentById = async (id: number) => {
     const { data } = await axiosInstance.get<IResponse<StudentResponse>>(
       `${RootPath.students}/${id}`
     );
+    message.success(data.msg);
     return data.data;
   } catch (e) {
     errorHandler(e);

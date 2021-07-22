@@ -55,7 +55,7 @@ const DashboardLayout = (props: React.PropsWithChildren<any>) => {
   );
 
   return (
-    <Layout style={{ height: "100vh" }}>
+    <Layout style={{ minHeight: "100vh" }}>
       <Sider
         collapsible
         collapsed={collapsed}
@@ -143,6 +143,7 @@ const DashboardLayout = (props: React.PropsWithChildren<any>) => {
           </Menu>
         )}
       </Sider>
+
       <Layout className="site-layout">
         <Header
           className="site-layout-background"
