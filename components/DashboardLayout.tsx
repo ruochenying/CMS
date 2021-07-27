@@ -6,32 +6,85 @@ import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
   UserOutlined,
-  VideoCameraOutlined,
-  UploadOutlined,
   LogoutOutlined,
-  DashboardOutlined,
-  SolutionOutlined,
-  DeploymentUnitOutlined,
-  ReadOutlined,
-  MessageOutlined,
-  TeamOutlined,
-  FileAddOutlined,
-  ProjectOutlined,
-  EditOutlined,
 } from "@ant-design/icons";
 
-import storage from "../lib/services/storage";
+import { routes, SideNav } from "../lib/constant/routes";
+import { generateKey, getActiveKey } from "../lib/util/side-nav";
+
 import { logout } from "../lib/services/api-service";
 import Link from "next/link";
+
 import SubMenu from "antd/lib/menu/SubMenu";
+import NavBreadcrumb from "./NavBreadcrumb";
+import { Role } from "../lib/model";
+import { useUserRole } from "./custom-hooks/Login-state";
+import storage from "../lib/services/storage";
 
 const { Header, Sider, Content } = Layout;
+
+const getMenuConfig = (
+  data: SideNav[],
+  pathname: string,
+  role: Role
+): { defaultSelectedKeys: string[]; defaultOpenKeys: string[] } => {
+  const key = getActiveKey(data, pathname, role);
+  const defaultSelectedKeys = [key.split("/").pop()];
+  const defaultOpenKeys = key.split("/").slice(0, -1);
+
+  return { defaultSelectedKeys, defaultOpenKeys };
+};
+
+const renderMenuItems = (
+  data: SideNav[],
+  role?,
+  parent = ""
+): JSX.Element[] => {
+  return data.map((item, index) => {
+    const key = generateKey(item, index);
+    if (item.hide) {
+      return null;
+    } else if (item.subNav) {
+      return (
+        <SubMenu key={key} title={item.label} icon={item.icon}>
+          {renderMenuItems(item.subNav, role, item.path.join("/"))}
+        </SubMenu>
+      );
+    } else {
+      return (
+        <Menu.Item key={key} title={item.label} icon={item.icon}>
+          {!!item.path.length ||
+          item.label.toLocaleLowerCase() === "overview" ? (
+            <Link
+              href={["/dashboard", role, parent, ...item.path]
+                .filter((item) => !!item)
+                .join("/")}
+              replace
+            >
+              {item.label}
+            </Link>
+          ) : (
+            item.label
+          )}
+        </Menu.Item>
+      );
+    }
+  });
+};
 
 const DashboardLayout = (props: React.PropsWithChildren<any>) => {
   const { children } = props;
   const router = useRouter();
+
   const [collapsed, setCollapsed] = useState(false);
-  const role = storage.role;
+  const role = useUserRole();
+  const sideNav = routes.get(role);
+
+  const { defaultOpenKeys, defaultSelectedKeys } = getMenuConfig(
+    sideNav,
+    router.pathname,
+    role
+  );
 
   const DropdownAvatar = () => {
     return (
@@ -48,7 +101,7 @@ const DashboardLayout = (props: React.PropsWithChildren<any>) => {
 
   const menu = (
     <Menu>
-      <Menu.Item key="1" onClick={logoutHandler} icon={<LogoutOutlined />}>
+      <Menu.Item key="100" onClick={logoutHandler} icon={<LogoutOutlined />}>
         Logout
       </Menu.Item>
     </Menu>
@@ -80,68 +133,14 @@ const DashboardLayout = (props: React.PropsWithChildren<any>) => {
             <span style={{ color: "#fff", cursor: "pointer" }}>CMS</span>
           </Link>
         </div>
-        {role === "manager" && (
-          <Menu theme="dark" mode="inline" defaultSelectedKeys={["1"]}>
-            <Menu.Item key="1" icon={<DashboardOutlined />}>
-              Overview
-            </Menu.Item>
-            <SubMenu key="student" icon={<SolutionOutlined />} title="Student">
-              <Menu.Item key="2" icon={<TeamOutlined />}>
-                <Link href={`/dashboard/${role}/students`}> Student List</Link>
-              </Menu.Item>
-            </SubMenu>
-            <SubMenu
-              key="teacher"
-              icon={<DeploymentUnitOutlined />}
-              title="Teacher"
-            >
-              <Menu.Item key="3" icon={<TeamOutlined />}>
-                <Link href={`/dashboard/${role}/teachers`}> Teacher List</Link>
-              </Menu.Item>
-            </SubMenu>
-            <SubMenu key="course" icon={<ReadOutlined />} title="Course">
-              <Menu.Item key="4" icon={<ProjectOutlined />}>
-                All Courses
-              </Menu.Item>
-              <Menu.Item key="5" icon={<FileAddOutlined />}>
-                Add Course
-              </Menu.Item>
-              <Menu.Item key="6" icon={<EditOutlined />}>
-                Edit Course
-              </Menu.Item>
-            </SubMenu>
-
-            <Menu.Item key="7" icon={<MessageOutlined />}>
-              Message
-            </Menu.Item>
-          </Menu>
-        )}
-        {role === "student" && (
-          <Menu theme="dark" mode="inline" defaultSelectedKeys={["1"]}>
-            <Menu.Item key="1" icon={<UserOutlined />}>
-              student 1
-            </Menu.Item>
-            <Menu.Item key="2" icon={<VideoCameraOutlined />}>
-              nav 2
-            </Menu.Item>
-            <Menu.Item key="3" icon={<UploadOutlined />}>
-              nav 3
-            </Menu.Item>
-          </Menu>
-        )}
-        {role === "teacher" && (
-          <Menu theme="dark" mode="inline" defaultSelectedKeys={["1"]}>
-            <Menu.Item key="1" icon={<UserOutlined />}>
-              teacher 1
-            </Menu.Item>
-            <Menu.Item key="2" icon={<VideoCameraOutlined />}>
-              nav 2
-            </Menu.Item>
-            <Menu.Item key="3" icon={<UploadOutlined />}>
-              nav 3
-            </Menu.Item>
-          </Menu>
-        )}
+        <Menu
+          theme="dark"
+          mode="inline"
+          defaultOpenKeys={defaultOpenKeys}
+          defaultSelectedKeys={defaultSelectedKeys}
+        >
+          {renderMenuItems(sideNav, role)}
+        </Menu>
       </Sider>
 
       <Layout className="site-layout">
@@ -166,6 +165,7 @@ const DashboardLayout = (props: React.PropsWithChildren<any>) => {
           )}
           <DropdownAvatar />
         </Header>
+
         <Content
           className="site-layout-background"
           style={{
@@ -174,6 +174,7 @@ const DashboardLayout = (props: React.PropsWithChildren<any>) => {
             minHeight: "auto",
           }}
         >
+          <NavBreadcrumb />
           {children}
         </Content>
       </Layout>

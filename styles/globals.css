@@ -23,6 +23,7 @@ a {
   line-height: 64px;
   cursor: pointer;
   transition: color 0.3s;
+  color: #fff;
 }
 
 .trigger:hover {

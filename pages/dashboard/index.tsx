@@ -1,7 +1,7 @@
 import DashBoardLayout from "../../components/DashboardLayout";
 
 const Dashboard = () => {
-  return <DashBoardLayout></DashBoardLayout>;
+  return <DashBoardLayout>overview</DashBoardLayout>;
 };
 
 export default Dashboard;
