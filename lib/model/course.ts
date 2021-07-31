@@ -1,3 +1,5 @@
+import { Paginator } from "./common";
+
 export interface CourseShort {
   id: number;
   courseId: number;
@@ -31,4 +33,18 @@ export interface Course {
   type: CourseType[];
   ctime: string;
   scheduleId: number;
+}
+
+export interface CourseRequest extends Paginator {
+  uid?: string;
+  name?: string;
+  type?: number;
+  userId?: number;
+  own?: any;
+}
+
+export interface CoursesResponse {
+  total: number;
+  courses: Course[];
+  paginator: Paginator;
 }

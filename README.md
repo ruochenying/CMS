@@ -105,3 +105,16 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
   - student list
     - api 请求 api/student, {
       }
+
+# chapter 6
+
+- 整理 sideNav 数据结构
+  - 需要 icon，label，path，subNav
+  - 如有 subnav，需要 hideLinkinBreadcrumb 为 ture 来判定是否在面包屑隐藏
+  - hide 属性来判定是否需要在 sidenav 上隐藏，适应 profile 需要
+  - key 可在渲染时凭借 label 和 index 生成
+- 通过 map 方式渲染 sideNav，如存在 subNav 需递归直到没有 subNav
+- 通过 router.pathname 拿到路径，通过比对路径对应的 sideNav 提取 defaultSelectedKeys 和 defaultOpenKeys
+  - 排除 detailpage 对路径的影响
+  - 通过生成的 key 来判定 selected 和 open keys
+  - 传入 menuconfig 动态生成

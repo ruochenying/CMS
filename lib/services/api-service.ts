@@ -13,6 +13,8 @@ import {
   UpdateStudentRequest,
   StudentRequest,
   StudentResponse,
+  CoursesResponse,
+  CourseRequest,
 } from "../model";
 import storage from "./storage";
 import { message } from "antd";
@@ -137,6 +139,21 @@ export const getStudentById = async (id: number) => {
   try {
     const { data } = await axiosInstance.get<IResponse<StudentResponse>>(
       `${RootPath.students}/${id}`
+    );
+    message.success(data.msg);
+    return data.data;
+  } catch (e) {
+    errorHandler(e);
+  }
+};
+
+export const getCourses = async (req?: CourseRequest) => {
+  try {
+    const { data } = await axiosInstance.get<IResponse<CoursesResponse>>(
+      RootPath.courses,
+      {
+        params: req,
+      }
     );
     message.success(data.msg);
     return data.data;

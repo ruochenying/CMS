@@ -32,7 +32,7 @@ const NavBreadcrumb = () => {
         }
 
         const record = deepSearchRecordFactory(
-          (nav: SideNav, value: any) => nav.label === value,
+          (nav: SideNav, value: string) => nav.label === value,
           name,
           "subNav"
         )(sideNav);

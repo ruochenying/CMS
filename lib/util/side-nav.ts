@@ -80,7 +80,6 @@ export const getSideNavNameByKey = (key: string): string[] => {
 export const getActiveKey = (data: SideNav[], pathname: string, role: Role) => {
   const activeRoute = omitDetailPath(pathname);
   const { paths, keys } = memoizedGetKeyPathInfo(data, role);
-
   const isEqual = isPathEqual(activeRoute);
   const index = paths.findIndex(isEqual);
 

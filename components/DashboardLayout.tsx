@@ -37,7 +37,7 @@ const getMenuConfig = (
 
 const renderMenuItems = (
   data: SideNav[],
-  role?,
+  role?: Role,
   parent = ""
 ): JSX.Element[] => {
   return data.map((item, index) => {
@@ -75,7 +75,6 @@ const renderMenuItems = (
 const DashboardLayout = (props: React.PropsWithChildren<any>) => {
   const { children } = props;
   const router = useRouter();
-
   const [collapsed, setCollapsed] = useState(false);
   const role = useUserRole();
   const sideNav = routes.get(role);
@@ -129,7 +128,7 @@ const DashboardLayout = (props: React.PropsWithChildren<any>) => {
             fontFamily: "monospace",
           }}
         >
-          <Link href="/">
+          <Link href="/" passHref>
             <span style={{ color: "#fff", cursor: "pointer" }}>CMS</span>
           </Link>
         </div>
