@@ -45,3 +45,14 @@ a {
   width: 200px;
   position: fixed;
 }
+
+/* .ant-collapse > .ant-collapse-item {
+  border-bottom: none !important;
+}
+.ant-collapse-content-box:last-child {
+  border-bottom: 1px solid #d9d9d9;
+}
+.ant-collapse {
+  border-radius: 0px !important;
+  border-bottom: none !important;
+} */

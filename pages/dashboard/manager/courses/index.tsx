@@ -16,7 +16,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     getCourses({ ...pagination }).then((resp) => {
-      setCourseList((courseList) => [...courseList, ...resp.courses]);
+      setCourseList((preCourseList) => [...preCourseList, ...resp.courses]);
       setTotal(resp.total);
     });
   }, [pagination]);
@@ -58,7 +58,7 @@ const Dashboard = () => {
           dataSource={courseList}
           renderItem={(item) => (
             <List.Item key={item.id}>
-              <CourseOverview {...{ ...item, total: total }}></CourseOverview>
+              <CourseOverview {...item}></CourseOverview>
             </List.Item>
           )}
         ></List>

@@ -1,0 +1,24 @@
+.col {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  position: relative;
+  border: 1px solid #f0f0f0;
+  border-left: none;
+  border-bottom: none;
+}
+.col:last-child {
+  border-right: none;
+}
+.col > p {
+  margin-bottom: 0;
+}
+.col > b {
+  color: #7356f1;
+  font-size: 24px;
+}
+.row {
+  width: calc(100% + 48px);
+  margin: 0 0 0 -24px !important;
+}

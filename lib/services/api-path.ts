@@ -4,3 +4,6 @@ export enum RootPath {
   students = "students",
   courses = "courses",
 }
+export enum SubPath {
+  detail = "detail",
+}

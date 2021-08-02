@@ -1,0 +1,13 @@
+.stepRow {
+  overflow-x: scroll;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.stepRow::-webkit-scrollbar {
+  display: none;
+}
+.stepRow.ant-steps-item-title {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  max-width: 6em;
+}

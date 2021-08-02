@@ -96,6 +96,10 @@ export const getSideNavNameByPath = (
   const { paths, keys } = memoizedGetKeyPathInfo(data, role);
   const isEqual = isPathEqual(path);
   const index = paths.findIndex(isEqual);
+  // const idx = paths.findIndex((p,index)=>{
+  //   return p === path;
+  // })
+  //
 
   const result = getSideNavNameByKey(keys[index]);
 

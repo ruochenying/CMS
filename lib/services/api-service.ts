@@ -1,4 +1,4 @@
-import { RootPath } from "./api-path";
+import { RootPath, SubPath } from "./api-path";
 import axios, { AxiosError } from "axios";
 import { AES } from "crypto-js";
 import {
@@ -15,10 +15,10 @@ import {
   StudentResponse,
   CoursesResponse,
   CourseRequest,
+  CourseDetailResponse,
 } from "../model";
 import storage from "./storage";
 import { message } from "antd";
-import { Content } from "antd/lib/layout/layout";
 
 const baseURL = "https://cms.chtoma.com/api/";
 
@@ -154,6 +154,19 @@ export const getCourses = async (req?: CourseRequest) => {
       {
         params: req,
       }
+    );
+    message.success(data.msg);
+    return data.data;
+  } catch (e) {
+    errorHandler(e);
+  }
+};
+
+export const getCourseById = async (id: number) => {
+  try {
+    const { data } = await axiosInstance.get<IResponse<CourseDetailResponse>>(
+      `${RootPath.courses}/${SubPath.detail}`,
+      { params: { id } }
     );
     message.success(data.msg);
     return data.data;

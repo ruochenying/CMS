@@ -18,7 +18,7 @@ export interface CourseType {
 export interface Course {
   id: number;
   name: string;
-  uid: string; //code
+  uid: string;
   detail: string;
   startTime: string;
   price: number;
@@ -48,3 +48,35 @@ export interface CoursesResponse {
   courses: Course[];
   paginator: Paginator;
 }
+
+interface Sales {
+  id: number;
+  batches: number;
+  price: number;
+  earnings: number;
+  paidAmount: number;
+  studentAmount: number;
+  paidIds: number[];
+}
+
+export interface Schedule {
+  id: number;
+  status: number;
+  current: number;
+  chapters: Chapter[];
+  classTime: string[];
+}
+
+export interface Chapter {
+  name: string;
+  id: number;
+  content: string;
+  order: number;
+}
+
+export interface CourseDetail extends Course {
+  sales: Sales;
+  schedule: Schedule;
+}
+
+export type CourseDetailResponse = CourseDetail;
