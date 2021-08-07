@@ -6,7 +6,7 @@
 .stepRow::-webkit-scrollbar {
   display: none;
 }
-.stepRow.ant-steps-item-title {
+.stepRow .ant-steps-item-title {
   text-overflow: ellipsis;
   overflow: hidden;
   max-width: 6em;

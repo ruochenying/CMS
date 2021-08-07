@@ -17,14 +17,16 @@ type StrictUnionHelper<T, TAll> = T extends any
 type StrictUnion<T> = StrictUnionHelper<T, T>;
 type State = StrictUnion<Course | CourseDetail>;
 
-const getDuration = (data: Course | CourseDetail): string => {
+const getDuration = (data: Partial<CourseDetail>): string => {
   const { duration, durationUnit } = data;
   const text = `${duration} ${DurationUnit[durationUnit]}`;
 
   return duration > 1 ? text + "s" : text;
 };
 
-const CourseOverview = (props: React.PropsWithChildren<State>) => {
+const CourseOverview = (
+  props: React.PropsWithChildren<Partial<CourseDetail>>
+) => {
   const role = useUserRole();
   const cardStyle = {
     paddingBottom: !!props.sales ? 0 : 24,

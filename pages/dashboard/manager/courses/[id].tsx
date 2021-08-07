@@ -35,9 +35,8 @@ const Page = () => {
   useEffect(() => {
     const courseId = +id;
     getCourseById(courseId).then((resp) => {
-      setCourseDetail(resp);
-
       if (resp) {
+        setCourseDetail(resp);
         setActiveChapterIndex(
           resp.schedule.chapters.findIndex(
             (item) => item.id === resp.schedule.current
@@ -101,13 +100,13 @@ const Page = () => {
             {courseDetail && (
               <Collapse defaultActiveKey={courseDetail.schedule.current}>
                 {courseDetail?.schedule.chapters.map((item, index) => (
-                  <Collapse.Panel
+                  <Panel
                     key={item.id}
                     header={item.name}
                     extra={getChapterExtra(courseDetail.schedule, index)}
                   >
                     <p>{item.content}</p>
-                  </Collapse.Panel>
+                  </Panel>
                 ))}
               </Collapse>
             )}

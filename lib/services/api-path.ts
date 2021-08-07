@@ -3,7 +3,11 @@ export enum RootPath {
   logout = "logout",
   students = "students",
   courses = "courses",
+  teachers = "teachers",
 }
 export enum SubPath {
   detail = "detail",
+  code = "code",
+  type = "type",
+  schedule = "schedule",
 }

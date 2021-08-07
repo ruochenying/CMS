@@ -1,6 +1,4 @@
 import Table, { ColumnsType } from "antd/lib/table";
-import { isThisMinute } from "date-fns/esm";
-import { da } from "date-fns/locale";
 
 interface weeklyClassTimetableProps {
   data: string[];
@@ -19,7 +17,7 @@ const WeeklyClassTimetable = ({ data }: weeklyClassTimetableProps) => {
     "Friday",
     "Saturday",
   ];
-  const target = weekday.map((title, index) => {
+  const target = weekday.map((title) => {
     return (
       data.find((item) =>
         item.toLocaleLowerCase().includes(title.toLocaleLowerCase())

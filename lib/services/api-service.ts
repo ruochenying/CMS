@@ -16,6 +16,12 @@ import {
   CoursesResponse,
   CourseRequest,
   CourseDetailResponse,
+  CourseType,
+  TeachersResponse,
+  TeachersRequest,
+  AddCourseRequest,
+  AddCourseResponse,
+  ScheduleRequest,
 } from "../model";
 import storage from "./storage";
 import { message } from "antd";
@@ -167,6 +173,70 @@ export const getCourseById = async (id: number) => {
     const { data } = await axiosInstance.get<IResponse<CourseDetailResponse>>(
       `${RootPath.courses}/${SubPath.detail}`,
       { params: { id } }
+    );
+    message.success(data.msg);
+    return data.data;
+  } catch (e) {
+    errorHandler(e);
+  }
+};
+
+export const getCourseCode = async () => {
+  try {
+    const { data } = await axiosInstance.get<IResponse<string>>(
+      `${RootPath.courses}/${SubPath.code}`,
+      {}
+    );
+    return data.data;
+  } catch (e) {
+    errorHandler(e);
+  }
+};
+
+export const getCourseType = async () => {
+  try {
+    const { data } = await axiosInstance.get<IResponse<CourseType[]>>(
+      `${RootPath.courses}/${SubPath.type}`,
+      {}
+    );
+    return data.data;
+  } catch (e) {
+    errorHandler(e);
+  }
+};
+
+export const addCourse = async (req: AddCourseRequest) => {
+  try {
+    const { data } = await axiosInstance.post<IResponse<AddCourseResponse>>(
+      RootPath.courses,
+      req
+    );
+    message.success(data.msg);
+    return data.data;
+  } catch (e) {
+    errorHandler(e);
+  }
+};
+export const updateSchedule = async (req: ScheduleRequest) => {
+  try {
+    const { data } = await axiosInstance.put<IResponse<boolean>>(
+      `${RootPath.courses}/${SubPath.schedule}`,
+      req
+    );
+    message.success(data.msg);
+    return data.data;
+  } catch (e) {
+    errorHandler(e);
+  }
+};
+
+export const getTeachers = async (req?: TeachersRequest) => {
+  try {
+    const { data } = await axiosInstance.get<IResponse<TeachersResponse>>(
+      RootPath.teachers,
+      {
+        params: req,
+      }
     );
     message.success(data.msg);
     return data.data;

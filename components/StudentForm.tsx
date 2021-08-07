@@ -16,8 +16,8 @@ const StudentForm = (props: React.PropsWithChildren<any>) => {
       labelCol={{ span: 6 }}
       wrapperCol={{ offset: 1 }}
       form={form}
-      onFinish={async (values: StudentFormData) => {
-        const response = (await !student)
+      onFinish={(values: StudentFormData) => {
+        const response = !student
           ? addStudent(values)
           : updateStudent({ ...values, id: student.id });
         response.then((student) => onFinish(student));
