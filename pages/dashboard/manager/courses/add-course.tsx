@@ -12,11 +12,14 @@ const { Step } = Steps;
 
 const Page = (props) => {
   const [step, setStep] = useState(0);
+  const [availableNavigate, setAvailableNavigate] = useState<number[]>([0]);
+
   const [course, setCourse] = useState<Course>(null);
   const router = useRouter();
   const userRole = useUserRole();
 
   const next = () => {
+    setAvailableNavigate([...availableNavigate, step + 1]);
     setStep(step + 1);
   };
 
@@ -25,9 +28,11 @@ const Page = (props) => {
       <Steps
         current={step}
         type="navigation"
-        // onChange={(e) => {
-        //   setStep(e);
-        // }}
+        onChange={(e) => {
+          if (availableNavigate.includes(e)) {
+            setStep(e);
+          }
+        }}
         style={{ padding: "0 15px", margin: "20px 0" }}
       >
         <Step title="Course Detail" />
@@ -36,6 +41,7 @@ const Page = (props) => {
       </Steps>
       {step === 0 && (
         <AddCourse
+          course={course}
           onSuccess={(course: Course) => {
             if (course) {
               setCourse(course);

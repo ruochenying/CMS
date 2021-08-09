@@ -104,3 +104,9 @@ export interface ScheduleRequest {
   chapters?: Omit<Chapter, "id">[];
   classTime?: string[];
 }
+
+export interface UpdateCourseRequest {
+  id: number;
+}
+
+export type UpdateCourseResponse = Course;

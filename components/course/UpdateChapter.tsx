@@ -2,12 +2,16 @@ import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { Button, Col, Input, message, Row, Select, TimePicker } from "antd";
 import Form from "antd/lib/form";
 import { useForm } from "antd/lib/form/Form";
+import moment from "moment";
 
 import React, { useEffect, useState } from "react";
 import { validateMessages, weekDays } from "../../lib/constant/config";
 
 import { Course, ScheduleRequest } from "../../lib/model";
-import { updateSchedule } from "../../lib/services/api-service";
+import {
+  getScheduleById,
+  updateSchedule,
+} from "../../lib/services/api-service";
 
 type ChapterFormValue = {
   chapters: {
@@ -20,23 +24,40 @@ type ChapterFormValue = {
   }[];
 };
 
+type selectedWeekday = {
+  weekday: string;
+  fieldKey: number;
+};
+
 const UpdateChapter = (
-  props: React.PropsWithChildren<Course> & { next: any }
+  props: React.PropsWithChildren<Course> & { next?: any }
 ) => {
   const [form] = useForm<ChapterFormValue>();
-  const [selectedWeekdays, setSelectedWeekdays] = useState<string[]>([]);
+  const [selectedWeekdays, setSelectedWeekdays] = useState<selectedWeekday[]>(
+    []
+  );
 
-  const updateWeekdayOptions = (namePath?: (string | number)[]) => {
-    const data = form.getFieldValue("classTime");
-    let result = data.map((item) => item?.weekday);
-
-    if (namePath) {
-      const value = form.getFieldValue(namePath);
-      result = result.filter((item) => item !== value);
-    }
-
-    setSelectedWeekdays(result);
-  };
+  useEffect(() => {
+    const response = getScheduleById({ scheduleId: props.scheduleId });
+    response.then((resp) => {
+      if (resp) {
+        const classTime = resp.classTime.map((item) => {
+          return {
+            weekday: item.split(" ")[0],
+            time: moment(item.split(" ")[1], "hh:mm:ss"),
+          };
+        });
+        form.setFieldsValue({ chapters: resp.chapters, classTime: classTime });
+        const selectedItems = resp.classTime.map((item, index) => {
+          return {
+            weekday: item.split(" ")[0],
+            fieldKey: index,
+          };
+        });
+        setSelectedWeekdays(selectedItems);
+      }
+    });
+  }, []);
 
   const onFinish = (values: ChapterFormValue) => {
     const { classTime, chapters } = values;
@@ -55,7 +76,7 @@ const UpdateChapter = (
 
     updateSchedule(req).then((resp) => {
       if (resp) {
-        props.next(true);
+        !!props.next && props.next();
       }
     });
   };
@@ -157,10 +178,17 @@ const UpdateChapter = (
                         <Select
                           size="large"
                           onChange={(value) => {
-                            setSelectedWeekdays([
-                              ...selectedWeekdays,
-                              value.toString(),
-                            ]);
+                            const selectedItem: selectedWeekday = {
+                              fieldKey: fieldKey,
+                              weekday: value.toString(),
+                            };
+
+                            const newSelectedWeekdays = selectedWeekdays.filter(
+                              (item) => item.fieldKey !== fieldKey
+                            );
+
+                            newSelectedWeekdays.push(selectedItem);
+                            setSelectedWeekdays(newSelectedWeekdays);
                           }}
                         >
                           {weekDays.map((day) => {
@@ -168,7 +196,11 @@ const UpdateChapter = (
                               <Select.Option
                                 key={day}
                                 value={day}
-                                disabled={selectedWeekdays.includes(day)}
+                                disabled={
+                                  !!selectedWeekdays.find(
+                                    (item) => item.weekday === day
+                                  )
+                                }
                               >
                                 {day}
                               </Select.Option>
@@ -199,11 +231,11 @@ const UpdateChapter = (
                         <MinusCircleOutlined
                           onClick={() => {
                             if (fields.length > 1) {
-                              updateWeekdayOptions([
-                                "classTime",
-                                name,
-                                "weekday",
-                              ]);
+                              const newSelectedWeekdays =
+                                selectedWeekdays.filter(
+                                  (item) => item.fieldKey !== fieldKey
+                                );
+                              setSelectedWeekdays(newSelectedWeekdays);
                               remove(name);
                             } else {
                               message.warn(
@@ -224,8 +256,6 @@ const UpdateChapter = (
                         size="large"
                         disabled={fields.length >= 7}
                         onClick={() => {
-                          updateWeekdayOptions();
-
                           add();
                         }}
                         block

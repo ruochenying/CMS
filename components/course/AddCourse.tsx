@@ -10,7 +10,6 @@ import {
   DatePicker,
   Button,
   Upload,
-  message,
 } from "antd";
 import ImgCrop from "antd-img-crop";
 import {
@@ -28,12 +27,19 @@ import {
   getCourseCode,
   getCourseType,
   getTeachers,
+  updateCourse,
 } from "../../lib/services/api-service";
-import { AddCourseRequest, CourseType, Teacher } from "../../lib/model";
+import { AddCourseRequest, Course, CourseType, Teacher } from "../../lib/model";
 import NumberWithUnitInput from "../common/NumberWithUnitInput";
 import styles from "./AddCourse.module.css";
 import styled from "styled-components";
 import { DurationUnit } from "../../lib/constant";
+import { useUserRole } from "../custom-hooks/Login-state";
+
+interface AddCourseFormProps {
+  course?: Course;
+  onSuccess?: (course: Course) => void;
+}
 
 const UploadItem = styled(Form.Item)`
   .ant-upload.ant-upload-select-picture-card {
@@ -71,8 +77,12 @@ const UploadItem = styled(Form.Item)`
   }
 `;
 
-const AddCourse = ({ onSuccess }: React.PropsWithChildren<any>) => {
+const AddCourse = ({
+  onSuccess,
+  course,
+}: React.PropsWithChildren<AddCourseFormProps>) => {
   const [form] = useForm();
+  const [isAdd, setIsAdd] = useState(course === null);
   const [courseTypes, setCourseTypes] = useState<CourseType[]>([]);
   const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [fileList, setFileList] = useState([]);
@@ -81,23 +91,46 @@ const AddCourse = ({ onSuccess }: React.PropsWithChildren<any>) => {
 
   useEffect(() => {
     (async () => {
-      const code = await getCourseCode();
       const type = await getCourseType();
-      setCourseTypes(type);
-      form.setFieldsValue({ uid: code });
+      !!type && setCourseTypes(type);
+      if (isAdd) {
+        const code = await getCourseCode();
+
+        !!code && form.setFieldsValue({ uid: code });
+      }
     })();
   }, []);
+
+  useEffect(() => {
+    if (!!course) {
+      const formValues = {
+        ...course,
+        type: course.type.map((item) => item.id),
+        teacherId: course.teacherName,
+        startTime: moment(course.startTime),
+        duration: { number: course.duration, unit: course.durationUnit },
+      };
+      setIsAdd(false);
+
+      form.setFieldsValue(formValues);
+      setFileList([{ name: "Cover Image", url: course.cover }]);
+    }
+  }, [course]);
 
   const onFinish = (values: any) => {
     const req: AddCourseRequest = {
       ...values,
       duration: +values.duration.number,
-      startTime: values.startTime && values.startTime.format("YYYY-MM-DD"),
-      teacherId: +values.teacherId,
-      durationUnit: DurationUnit[values.duration.unit],
+      startTime: values.startTime.format("YYYY-MM-DD"),
+      teacherId: +values.teacherId || +course.teacherId,
+      durationUnit: +DurationUnit[values.duration.unit] || values.duration.unit,
     };
 
-    addCourse(req).then((resp) => onSuccess(resp));
+    isAdd
+      ? addCourse(req).then((resp) => onSuccess(resp))
+      : updateCourse({ ...req, id: course.id }).then((resp) => {
+          !!onSuccess && onSuccess(resp);
+        });
   };
 
   const onPreview = async (file) => {
@@ -184,12 +217,7 @@ const AddCourse = ({ onSuccess }: React.PropsWithChildren<any>) => {
                 name="uid"
                 rules={[{ required: true }]}
               >
-                <Input
-                  type="text"
-                  placeholder="course code"
-                  disabled
-                  addonAfter={<KeyOutlined style={{ cursor: "pointer" }} />}
-                />
+                <Input type="text" placeholder="course code" disabled />
               </Form.Item>
             </Col>
           </Row>
@@ -206,11 +234,11 @@ const AddCourse = ({ onSuccess }: React.PropsWithChildren<any>) => {
             />
           </Form.Item>
           <Form.Item label="Price" name="price" rules={[{ required: true }]}>
-            <InputNumber
+            <InputNumber<number>
               formatter={(value) =>
                 `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
               }
-              parser={(value: any) => value.replace(/\$\s?|(,*)/g, "")}
+              parser={(value) => +value.replace(/\$\s?|(,*)/g, "")}
               min={0}
               style={{ width: "100%" }}
             />
@@ -303,7 +331,7 @@ const AddCourse = ({ onSuccess }: React.PropsWithChildren<any>) => {
         <Col span={8}>
           <Form.Item>
             <Button type="primary" htmlType="submit" disabled={isUploading}>
-              Create Course
+              {isAdd ? "Create Course" : "Update Course"}
             </Button>
           </Form.Item>
         </Col>
