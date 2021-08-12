@@ -41,14 +41,14 @@ const UpdateChapter = (
     const response = getScheduleById({ scheduleId: props.scheduleId });
     response.then((resp) => {
       if (resp) {
-        const classTime = resp.classTime.map((item) => {
+        const classTime = resp.classTime?.map((item) => {
           return {
             weekday: item.split(" ")[0],
             time: moment(item.split(" ")[1], "hh:mm:ss"),
           };
         });
         form.setFieldsValue({ chapters: resp.chapters, classTime: classTime });
-        const selectedItems = resp.classTime.map((item, index) => {
+        const selectedItems = resp.classTime?.map((item, index) => {
           return {
             weekday: item.split(" ")[0],
             fieldKey: index,
@@ -57,7 +57,7 @@ const UpdateChapter = (
         setSelectedWeekdays(selectedItems);
       }
     });
-  }, []);
+  }, [form, props.scheduleId]);
 
   const onFinish = (values: ChapterFormValue) => {
     const { classTime, chapters } = values;

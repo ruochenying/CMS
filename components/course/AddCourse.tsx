@@ -34,7 +34,6 @@ import NumberWithUnitInput from "../common/NumberWithUnitInput";
 import styles from "./AddCourse.module.css";
 import styled from "styled-components";
 import { DurationUnit } from "../../lib/constant";
-import { useUserRole } from "../custom-hooks/Login-state";
 
 interface AddCourseFormProps {
   course?: Course;
@@ -99,7 +98,7 @@ const AddCourse = ({
         !!code && form.setFieldsValue({ uid: code });
       }
     })();
-  }, []);
+  }, [form, isAdd]);
 
   useEffect(() => {
     if (!!course) {
@@ -115,7 +114,7 @@ const AddCourse = ({
       form.setFieldsValue(formValues);
       setFileList([{ name: "Cover Image", url: course.cover }]);
     }
-  }, [course]);
+  }, [course, form]);
 
   const onFinish = (values: any) => {
     const req: AddCourseRequest = {

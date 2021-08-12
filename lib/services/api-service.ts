@@ -25,6 +25,11 @@ import {
   UpdateCourseRequest,
   UpdateCourseResponse,
   Schedule,
+  AddTeacherRequest,
+  AddTeacherResponse,
+  UpdateTeacherRequest,
+  UpdateTeacherResponse,
+  TeacherResponse,
 } from "../model";
 import storage from "./storage";
 import { message } from "antd";
@@ -273,6 +278,56 @@ export const getTeachers = async (req?: TeachersRequest) => {
       {
         params: req,
       }
+    );
+    message.success(data.msg);
+    return data.data;
+  } catch (e) {
+    errorHandler(e);
+  }
+};
+
+export const addTeacher = async (req: AddTeacherRequest) => {
+  try {
+    const { data } = await axiosInstance.post<IResponse<AddTeacherResponse>>(
+      RootPath.teachers,
+      req
+    );
+    message.success(data.msg);
+    return data.data;
+  } catch (e) {
+    errorHandler(e);
+  }
+};
+
+export const updateTeacher = async (req: UpdateTeacherRequest) => {
+  try {
+    const { data } = await axiosInstance.put<IResponse<UpdateTeacherResponse>>(
+      RootPath.teachers,
+      req
+    );
+    message.success(data.msg);
+    return data.data;
+  } catch (e) {
+    errorHandler(e);
+  }
+};
+
+export const deleteTeacher = async (id: number) => {
+  try {
+    const { data } = await axiosInstance.delete<IResponse<Boolean>>(
+      RootPath.teachers + "/" + id
+    );
+    message.success(data.msg);
+    return data.data;
+  } catch (e) {
+    errorHandler(e);
+  }
+};
+
+export const getTeacherById = async (id: number) => {
+  try {
+    const { data } = await axiosInstance.get<IResponse<TeacherResponse>>(
+      `${RootPath.teachers}/${id}`
     );
     message.success(data.msg);
     return data.data;

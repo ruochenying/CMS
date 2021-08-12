@@ -6,18 +6,13 @@ import { Table, Popconfirm, Space, Button, Input } from "antd";
 import TextLink from "antd/lib/typography/Link";
 import { ColumnsType } from "antd/es/table";
 import { formatDistanceToNow } from "date-fns";
-import {
-  Student,
-  CourseShort,
-  StudentType,
-  Paginator,
-} from "../../../../lib/model";
+import { Student, CourseShort, StudentType } from "../../../../lib/model";
 import DashBoardLayout from "../../../../components/DashboardLayout";
 import {
   getStudents,
   deleteStudent,
 } from "../../../../lib/services/api-service";
-import StudentForm from "../../../../components/StudentForm";
+import StudentForm from "../../../../components/student/StudentForm";
 import ModalForm from "../../../../components/ModelForm";
 
 const businessAreas = ["China", "New Zealand", "Canada", "Australia"];
@@ -27,9 +22,8 @@ const Page = () => {
   const [pagination, setPagination] = useState(Pagination);
   const [query, setQuery] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [total, setTotal] = useState<number>();
-
   const [selectedStudent, setSelectedStudent] = useState<Student>(null);
   const [studentList, setStudentList] = useState<Student[]>();
 
@@ -118,6 +112,7 @@ const Page = () => {
     {
       title: "Area",
       dataIndex: "country",
+
       filters: businessAreas.map((item) => ({ text: item, value: item })),
       onFilter: (value: string, record: Student) =>
         record.country.includes(value),
@@ -211,7 +206,7 @@ const Page = () => {
               const index = studentList.findIndex(
                 (student) => student.id === updatedStudent.id
               );
-              if (index > 0) {
+              if (index >= 0) {
                 newStudentList[index] = updatedStudent;
               } else {
                 newStudentList.push(updatedStudent);

@@ -1,7 +1,7 @@
 import { Form, Input, Select, Button } from "antd";
 import React from "react";
-import { AddStudentRequest, Student } from "../lib/model";
-import { addStudent, updateStudent } from "../lib/services/api-service";
+import { AddStudentRequest, Student } from "../../lib/model";
+import { addStudent, updateStudent } from "../../lib/services/api-service";
 
 interface StudentFormData extends AddStudentRequest {}
 

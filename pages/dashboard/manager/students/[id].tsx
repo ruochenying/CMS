@@ -74,6 +74,7 @@ const Page = () => {
         { label: "Create Time", value: resp.createdAt },
         { label: "Update Time", value: resp.updatedAt },
       ];
+
       setInfo(info);
       setAbout(about);
       setCourses(resp.courses);
