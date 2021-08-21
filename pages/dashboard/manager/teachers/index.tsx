@@ -39,8 +39,10 @@ const Page = () => {
     );
     setLoading(true);
     getTeachers(reqParams).then((resp) => {
-      setTotal(resp.total);
-      setTeacherList(resp.teachers);
+      if (resp) {
+        setTotal(resp.total);
+        setTeacherList(resp.teachers);
+      }
     });
     setLoading(false);
   }, [query, pagination]);

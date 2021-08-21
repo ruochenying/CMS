@@ -111,6 +111,13 @@ const DashboardLayout = (props: React.PropsWithChildren<any>) => {
       <Sider
         collapsible
         collapsed={collapsed}
+        style={{
+          overflow: "auto",
+          height: "100vh",
+          position: "sticky",
+          top: 0,
+          left: 0,
+        }}
         onCollapse={(isCollapsed) => setCollapsed(isCollapsed)}
       >
         <div
@@ -151,6 +158,9 @@ const DashboardLayout = (props: React.PropsWithChildren<any>) => {
             justifyContent: "space-between",
             alignItems: "center",
             backgroundColor: "#001529",
+            position: "sticky",
+            zIndex: 10,
+            top: 0,
           }}
         >
           {React.createElement(

@@ -30,6 +30,10 @@ import {
   UpdateTeacherRequest,
   UpdateTeacherResponse,
   TeacherResponse,
+  StatisticsOverviewResponse,
+  StudentStatisticsResponse,
+  TeacherStatisticsResponse,
+  CourseStatisticsResponse,
 } from "../model";
 import storage from "./storage";
 import { message } from "antd";
@@ -334,4 +338,58 @@ export const getTeacherById = async (id: number) => {
   } catch (e) {
     errorHandler(e);
   }
+};
+
+export const getStatisticsOverview = async () => {
+  try {
+    const { data } = await axiosInstance.get<
+      IResponse<StatisticsOverviewResponse>
+    >(`${RootPath.statistics}/${SubPath.overview}`);
+    message.success(data.msg);
+    return data.data;
+  } catch (e) {
+    errorHandler(e);
+  }
+};
+
+export const getStudentStatistics = async () => {
+  try {
+    const { data } = await axiosInstance.get<
+      IResponse<StudentStatisticsResponse>
+    >(`${RootPath.statistics}/${SubPath.student}`);
+    message.success(data.msg);
+    return data.data;
+  } catch (e) {
+    errorHandler(e);
+  }
+};
+
+export const getTeacherStatistics = async () => {
+  try {
+    const { data } = await axiosInstance.get<
+      IResponse<TeacherStatisticsResponse>
+    >(`${RootPath.statistics}/${SubPath.teacher}`);
+    message.success(data.msg);
+    return data.data;
+  } catch (e) {
+    errorHandler(e);
+  }
+};
+
+export const getCourseStatistics = async () => {
+  try {
+    const { data } = await axiosInstance.get<
+      IResponse<CourseStatisticsResponse>
+    >(`${RootPath.statistics}/${SubPath.course}`);
+    message.success(data.msg);
+    return data.data;
+  } catch (e) {
+    errorHandler(e);
+  }
+};
+
+export const getWorld = async () => {
+  return await axios.get(
+    "https://code.highcharts.com/mapdata/custom/world-palestine-highres.geo.json"
+  );
 };
