@@ -34,6 +34,12 @@ import {
   StudentStatisticsResponse,
   TeacherStatisticsResponse,
   CourseStatisticsResponse,
+  MessagesRequest,
+  MessagesResponse,
+  MessageStatisticResponse,
+  StudentOwnStatisticsResponse,
+  StudentOwnCoursesResponse,
+  ClassSchedule,
 } from "../model";
 import storage from "./storage";
 import { message } from "antd";
@@ -66,8 +72,8 @@ axiosInstance.interceptors.request.use((config) => {
 });
 
 const errorHandler = (err: AxiosError<IResponse>) => {
-  const msg = err.response.data.msg;
-  const code = err.response.status;
+  const msg = err.response?.data.msg;
+  const code = err.response?.status;
   console.log(msg);
   console.log(code);
   if (isError(code)) message.error(msg);
@@ -75,13 +81,22 @@ const errorHandler = (err: AxiosError<IResponse>) => {
 };
 
 const isError = (code: number): boolean => {
-  return !(code.toString().startsWith("2") || code.toString().startsWith("3"));
+  return !(
+    code?.toString().startsWith("2") || code?.toString().startsWith("3")
+  );
 };
 
 export const logout = async () => {
-  await axiosInstance
-    .post<IResponse<Boolean>>(RootPath.logout, {})
-    .catch((e) => errorHandler(e));
+  try {
+    const { data } = await axiosInstance.post<IResponse<boolean>>(
+      RootPath.logout,
+      {}
+    );
+    message.success(data.msg);
+    return data.data;
+  } catch (e) {
+    errorHandler(e);
+  }
 };
 
 export const login = async ({ password, ...rest }: LoginRequest) => {
@@ -173,6 +188,19 @@ export const getCourses = async (req?: Partial<CourseRequest>) => {
         params: req,
       }
     );
+    message.success(data.msg);
+    return data.data;
+  } catch (e) {
+    errorHandler(e);
+  }
+};
+export const getStudentOwnCourses = async (req?: Partial<CourseRequest>) => {
+  try {
+    const { data } = await axiosInstance.get<
+      IResponse<StudentOwnCoursesResponse>
+    >(RootPath.courses, {
+      params: req,
+    });
     message.success(data.msg);
     return data.data;
   } catch (e) {
@@ -388,8 +416,86 @@ export const getCourseStatistics = async () => {
   }
 };
 
+export const getStudentOwnStatistics = async (userId: number) => {
+  try {
+    const { data } = await axiosInstance.get<
+      IResponse<StudentOwnStatisticsResponse>
+    >(`${RootPath.statistics}/${SubPath.student}`, { params: userId });
+    message.success(data.msg);
+    return data.data;
+  } catch (e) {
+    errorHandler(e);
+  }
+};
+
+export const getMessages = async (req: MessagesRequest) => {
+  try {
+    const { data } = await axiosInstance.get<IResponse<MessagesResponse>>(
+      RootPath.message,
+      {
+        params: req,
+      }
+    );
+    message.success(data.msg);
+    return data.data;
+  } catch (e) {
+    errorHandler(e);
+  }
+};
+
+export const getMessageStatistic = async (userId?: number) => {
+  try {
+    const { data } = await axiosInstance.get<
+      IResponse<MessageStatisticResponse>
+    >(`${RootPath.message}/${SubPath.statistics}`, {
+      params: { userId },
+    });
+    message.success(data.msg);
+    return data.data;
+  } catch (e) {
+    errorHandler(e);
+  }
+};
+
+export const markAsRead = async (ids: number[]) => {
+  try {
+    const { data } = await axiosInstance.put<IResponse<boolean>>(
+      RootPath.message,
+      { status: 1, ids }
+    );
+    message.success(data.msg);
+    return data.data;
+  } catch (e) {
+    errorHandler(e);
+  }
+};
+
+export const getClassSchedule = async (userId: number) => {
+  try {
+    const { data } = await axiosInstance.get<IResponse<ClassSchedule[]>>(
+      `${RootPath.class}/${SubPath.schedule}`,
+      {
+        params: { userId },
+      }
+    );
+    message.success(data.msg);
+    return data.data;
+  } catch (e) {
+    errorHandler(e);
+  }
+};
+
 export const getWorld = async () => {
   return await axios.get(
     "https://code.highcharts.com/mapdata/custom/world-palestine-highres.geo.json"
+  );
+};
+
+export const messageEvent = () => {
+  return new EventSource(
+    `${baseURL}message/subscribe?userId=${storage.userId}`,
+    {
+      withCredentials: true,
+    }
   );
 };

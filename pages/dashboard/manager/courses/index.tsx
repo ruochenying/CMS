@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { List, Spin, BackTop } from "antd";
+
 import InfiniteScroll from "react-infinite-scroll-component";
 import DashBoardLayout from "../../../../components/DashboardLayout";
 import { getCourses } from "../../../../lib/services/api-service";
@@ -26,9 +27,7 @@ const Dashboard = () => {
       <InfiniteScroll
         next={() => {
           setPagination({ ...pagination, page: pagination.page + 1 });
-          setHasMore(
-            hasMore ? total > courseList.length : total <= courseList.length
-          );
+          setHasMore(total > courseList.length);
         }}
         hasMore={hasMore}
         loader={

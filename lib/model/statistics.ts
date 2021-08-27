@@ -4,7 +4,7 @@ import { Teacher, TeacherProfile } from "./teacher";
 
 export interface BasicStatistics {
   total: number; //总数
-  lastMonthAdded: number; //近一个月内加入的数量
+  lastMonthAdded?: number; //近一个月内加入的数量
 }
 export interface GenderStatistics extends BasicStatistics {
   gender: { male: number; female: number; unknown: number };

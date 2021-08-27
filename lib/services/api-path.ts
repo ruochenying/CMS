@@ -5,6 +5,8 @@ export enum RootPath {
   courses = "courses",
   teachers = "teachers",
   statistics = "statistics",
+  message = "message",
+  class = "class",
 }
 export enum SubPath {
   detail = "detail",
@@ -15,4 +17,5 @@ export enum SubPath {
   student = "student",
   teacher = "teacher",
   course = "course",
+  statistics = "statistics",
 }

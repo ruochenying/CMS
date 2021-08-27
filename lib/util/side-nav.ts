@@ -74,7 +74,7 @@ const isPathEqual = (target: string) => (current: string) => {
 };
 
 export const getSideNavNameByKey = (key: string): string[] => {
-  return key.split("/").map((item) => item.split("_")[0]);
+  return key?.split("/").map((item) => item.split("_")[0]);
 };
 
 export const getActiveKey = (data: SideNav[], pathname: string, role: Role) => {
@@ -92,7 +92,7 @@ export const getSideNavNameByPath = (
   role: Role
 ): string[] => {
   const isDetail = isDetailPath(path);
-  path = isDetail ? path.split("/").slice(0, -1).join("/") : path;
+  path = isDetail ? path?.split("/").slice(0, -1).join("/") : path;
   const { paths, keys } = memoizedGetKeyPathInfo(data, role);
   const isEqual = isPathEqual(path);
   const index = paths.findIndex(isEqual);

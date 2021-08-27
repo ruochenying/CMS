@@ -46,7 +46,9 @@ const Distribution = ({ data, title }: DistributionProps) => {
       title: {
         text: title,
       },
-
+      chart: {
+        margin: [5, 5, 5, 5],
+      },
       legend: {
         layout: "vertical",
         align: "left",

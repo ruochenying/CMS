@@ -1,4 +1,4 @@
-import { Paginator } from "./common";
+import { ListResponse, Paginator } from "./common";
 
 export interface CourseShort {
   id: number;
@@ -110,3 +110,19 @@ export interface UpdateCourseRequest {
 }
 
 export type UpdateCourseResponse = Course;
+
+export interface StudentCourse {
+  id: number;
+  studentId: number;
+  ctime: string;
+  courseDate: string;
+  course: Course;
+}
+
+export interface StudentOwnCoursesResponse extends ListResponse {
+  courses: StudentCourse[];
+}
+
+export interface ClassSchedule extends Course {
+  schedule: Schedule;
+}

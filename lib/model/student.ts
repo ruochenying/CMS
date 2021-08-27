@@ -1,4 +1,5 @@
-import { Paginator } from "./common";
+import { Statistic } from ".";
+import { ListResponse, Paginator } from "./common";
 import { CourseShort, Course } from "./course";
 
 export interface StudentsResponse {
@@ -66,4 +67,9 @@ export interface StudentProfile {
   memberStartAt: string;
   memberEndAt: string;
   description: string;
+}
+
+export interface StudentOwnStatisticsResponse {
+  own: Statistic;
+  recommend: Statistic;
 }
