@@ -54,6 +54,7 @@ export interface OverviewStatistics {
   amount: number;
   status: number;
 }
+
 interface StoreState {
   page: number;
   max: number;
@@ -96,7 +97,6 @@ const IconText = ({ icon, text }) => (
 const Dashboard = () => {
   const [data, setData] = useState<StudentOwnStatisticsResponse>(null);
   const [overview, setOverview] = useState<OverviewStatistics[]>([]);
-
   const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {

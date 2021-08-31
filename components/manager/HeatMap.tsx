@@ -2,7 +2,7 @@ import Highcharts from "highcharts";
 import HighchartsHeatmap from "highcharts/modules/heatmap";
 import HighchartsExporting from "highcharts/modules/exporting";
 import HighchartsReact from "highcharts-react-official";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { weekDays } from "../../lib/constant";
 import { CourseClassTimeStatistic } from "../../lib/model";
 
@@ -30,6 +30,7 @@ const HeatMap = ({ data }: HeatMapProps) => {
     chart: {
       type: "heatmap",
       plotBorderWidth: 1,
+      // margin: [30, 30, 30, 30],
     },
     title: {
       text: "Course Schedule Per Weekday",
@@ -60,6 +61,19 @@ const HeatMap = ({ data }: HeatMapProps) => {
       },
     },
   });
+
+  const charRef = useRef(null);
+
+  useEffect(() => {
+    const { chart } = charRef.current;
+    const timer = setTimeout(() => {
+      chart.reflow();
+    }, 30);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, []);
 
   useEffect(() => {
     if (!data) {
@@ -149,6 +163,7 @@ const HeatMap = ({ data }: HeatMapProps) => {
     <HighchartsReact
       highcharts={Highcharts}
       options={options}
+      ref={charRef}
     ></HighchartsReact>
   );
 };
