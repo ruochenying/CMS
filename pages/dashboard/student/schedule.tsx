@@ -20,7 +20,6 @@ import { Chapter, ClassSchedule } from "../../../lib/model";
 import { getClassSchedule } from "../../../lib/services/api-service";
 import storage from "../../../lib/services/storage";
 import { weekDays } from "../../../lib/constant";
-import { MentionPlacement } from "antd/lib/mentions";
 import moment from "moment";
 
 export interface WeekdayTime {
@@ -74,7 +73,7 @@ function generateClassCalendar(course: ClassSchedule): ClassCalendar[] {
 
   const chaptersCopy = cloneDeep(chapters);
   const start = new Date(startTime);
-  const addFns = [addYears, addMonths, addDays, addWeeks, addHours]; // !最小单位是天，暂不考虑是小时的情况
+  const addFns = [addYears, addMonths, addDays, addWeeks, addHours];
   const end = addFns[durationUnit - 1](start, duration);
   const days = differenceInCalendarDays(end, start);
   const transformWeekday = (day: string) =>
